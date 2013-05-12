@@ -2,9 +2,9 @@ package lycanite.metalmech;
 
 import java.io.File;
 
-import lycanite.metalmech.block.TileEntityMachine;
-import lycanite.metalmech.block.TileEntityMachineCrusher;
-import lycanite.metalmech.block.TileEntityMachineElectric;
+import lycanite.metalmech.tileentity.TileEntityMachine;
+import lycanite.metalmech.tileentity.TileEntityMachineCrusher;
+import lycanite.metalmech.tileentity.TileEntityMachineElectric;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonProxy {

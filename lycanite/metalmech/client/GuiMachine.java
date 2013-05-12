@@ -1,8 +1,8 @@
 package lycanite.metalmech.client;
 
 import lycanite.metalmech.MetalMech;
-import lycanite.metalmech.block.ContainerMachine;
-import lycanite.metalmech.block.TileEntityMachine;
+import lycanite.metalmech.container.ContainerMachine;
+import lycanite.metalmech.tileentity.TileEntityMachine;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -33,12 +33,12 @@ public class GuiMachine extends GuiContainer {
     // Draw Background:
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
         String texture = "/gui/furnace.png";
-        if(this.guiTileEntity.getType() == TileEntityMachine.MachineType.CRUSHER.id) {
+        if(this.guiTileEntity.getCategory() == "Crusher") {
 			texture = "/mods/Metallurgy/textures/guis/crusher.png";
 		}
         
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F); // Allows for colours.
-        this.mc.renderEngine.bindTexture(texture); // Loads texture for GUI.
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        this.mc.renderEngine.bindTexture(texture);
         
         int canvasWidth = (this.width - this.xSize) / 2;
         int canvasHeight = (this.height - this.ySize) / 2;

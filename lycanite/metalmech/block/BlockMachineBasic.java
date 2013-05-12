@@ -11,9 +11,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lycanite.metalmech.CommonProxy;
 import lycanite.metalmech.GuiHandler;
+import lycanite.metalmech.MachineManager;
 import lycanite.metalmech.MetalMech;
-import lycanite.metalmech.block.TileEntityMachine;
 import lycanite.metalmech.item.ItemBlockMachine;
+import lycanite.metalmech.tileentity.TileEntityMachine;
+import lycanite.metalmech.tileentity.TileEntityMachineElectric;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -52,37 +54,20 @@ public class BlockMachineBasic extends BlockContainer {
         MinecraftForge.setBlockHarvestLevel(this, "pickaxe", 1);
         setStepSound(Block.soundMetalFootstep);
         setCreativeTab(MetalMech.creativeTab);
-        //setRequiresSelfNotify();
-	}
-	
-	
-	// Get Names:
-	public String[] getNames() {
-		return MetalMech.machineBlockNames;
-	}
-	
-	
-	// Get Titles:
-	public String[] getTitles() {
-		return MetalMech.machineBlockTitles;
 	}
 	
 	
 	// Register Block:
 	public void registerBlock() {
 		Item.itemsList[this.blockID] = new ItemBlockMachine(this.blockID - 256);
-		for(int subBlock = 0; subBlock < this.getNames().length; subBlock++) {
-			LanguageRegistry.instance().addStringLocalization(this.getNames()[subBlock] + ".name", this.getTitles()[subBlock]);
-		}
 	}
 	
 	
 	// Get Sub Blocks (For Creative Tabs):
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int unknown, CreativeTabs tab, List subItems) {
-		for(int itemMeta = 0; itemMeta < getNames().length; itemMeta++) {
+		for(int itemMeta = 0; itemMeta < MachineManager.getSubBlocks(MachineManager.getCategory(this.blockID)); itemMeta++)
 			subItems.add(new ItemStack(this, 1, itemMeta));
-		}
 	}
 	
 	
@@ -103,7 +88,8 @@ public class BlockMachineBasic extends BlockContainer {
 	// Register Icons:
 	@Override
 	public void registerIcons(IconRegister iconRegister) {
-		for(String machineRankN : TileEntityMachine.machineRankMetadata.keySet()) {
+		String[] machineRanks = {"LeadFurnace", "AluminiumFurnace", "TitaniumFurnace"};
+		for(String machineRankN : machineRanks) {
 			this.blockIcons.put(machineRankN, iconRegister.registerIcon(MetalMech.modid + ":" + texturePath + machineRankN + "Side"));
 			this.blockIconsTop.put(machineRankN, iconRegister.registerIcon(MetalMech.modid + ":" + texturePath + machineRankN + "Top"));
 			this.blockIconsFront.put(machineRankN, iconRegister.registerIcon(MetalMech.modid + ":" + texturePath + machineRankN + "Front"));
@@ -125,24 +111,24 @@ public class BlockMachineBasic extends BlockContainer {
 			isActive = ((TileEntityMachine)tileEntity).isActive();
 		}
 		if(tileEntity instanceof TileEntityMachineElectric) {
-			facing = ((TileEntityMachineElectric)tileEntity).facing;
+			facing = ((TileEntityMachineElectric)tileEntity).getFacing();
 			isActive = ((TileEntityMachineElectric)tileEntity).isActive();
 		}
 		
 		switch(side) {
-			case 1: return this.blockIconsTop.get(TileEntityMachine.getRankFromMetadata(metadata)); // Top
-			case 0: return this.blockIconsTop.get(TileEntityMachine.getRankFromMetadata(metadata)); // Bottom
+			case 1: return this.blockIconsTop.get(MachineManager.getType(metadata, "Furnace")); // Top
+			case 0: return this.blockIconsTop.get(MachineManager.getType(metadata, "Furnace")); // Bottom
 			default:
 				if(side == facing) {
 					if(isActive) {
-						return this.blockIconsActive.get(TileEntityMachine.getRankFromMetadata(metadata)); // Front On
+						return this.blockIconsActive.get(MachineManager.getType(metadata, "Furnace")); // Front On
 					}
 					else {
-						return this.blockIconsFront.get(TileEntityMachine.getRankFromMetadata(metadata)); // Front
+						return this.blockIconsFront.get(MachineManager.getType(metadata, "Furnace")); // Front
 					}
 				}
 				else {
-					return this.blockIcons.get(TileEntityMachine.getRankFromMetadata(metadata)); // Sides
+					return this.blockIcons.get(MachineManager.getType(metadata, "Furnace")); // Sides
 				}
 		}
 	}
@@ -152,10 +138,10 @@ public class BlockMachineBasic extends BlockContainer {
 	@Override
 	public Icon getIcon(int side, int metadata) {
 		switch(side) {
-			case 1: return this.blockIconsTop.get(TileEntityMachine.getRankFromMetadata(metadata)); // Top
-			case 0: return this.blockIconsTop.get(TileEntityMachine.getRankFromMetadata(metadata)); // Bottom
-			case 3: return this.blockIconsFront.get(TileEntityMachine.getRankFromMetadata(metadata)); // Front (Inventory)
-			default: return this.blockIcons.get(TileEntityMachine.getRankFromMetadata(metadata)); // Sides
+			case 1: return this.blockIconsTop.get(MachineManager.getType(metadata, "Furnace")); // Top
+			case 0: return this.blockIconsTop.get(MachineManager.getType(metadata, "Furnace")); // Bottom
+			case 3: return this.blockIconsFront.get(MachineManager.getType(metadata, "Furnace")); // Front (Inventory)
+			default: return this.blockIcons.get(MachineManager.getType(metadata, "Furnace")); // Sides
 		}
 	}
 	
@@ -300,10 +286,17 @@ public class BlockMachineBasic extends BlockContainer {
 	
 	// Tile Entity:
 	@Override
-	public TileEntity createNewTileEntity(World world) {
+	public TileEntity createTileEntity(World world, int metadata) {
 		TileEntityMachine tileEntity = new TileEntityMachine();
+		tileEntity.setMetadata(metadata);
 		return tileEntity;
 	}
+	public TileEntity createNewTileEntity(World world) {
+		TileEntityMachine tileEntity = new TileEntityMachine();
+		//tileEntity.setMetadata(0);
+		return tileEntity;
+	}
+	
 	
 	
 	// Update Machine Block State:

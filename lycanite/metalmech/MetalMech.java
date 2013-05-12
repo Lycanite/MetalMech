@@ -6,10 +6,10 @@ import java.util.Map;
 import lycanite.metalmech.block.BlockMachineBasic;
 import lycanite.metalmech.block.BlockMachineCrusher;
 import lycanite.metalmech.block.BlockMachineElectric;
-import lycanite.metalmech.block.TileEntityMachine;
-import lycanite.metalmech.block.TileEntityMachineCrusher;
-import lycanite.metalmech.block.TileEntityMachineElectric;
 import lycanite.metalmech.client.IModelRender;
+import lycanite.metalmech.tileentity.TileEntityMachine;
+import lycanite.metalmech.tileentity.TileEntityMachineCrusher;
+import lycanite.metalmech.tileentity.TileEntityMachineElectric;
 import net.minecraft.block.Block;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.creativetab.CreativeTabs;
@@ -33,7 +33,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = MetalMech.modid, name = MetalMech.name, version="1.4.1")
+@Mod(modid = MetalMech.modid, name = MetalMech.name, version="1.4.3")
 @NetworkMod(clientSideRequired=true, serverSideRequired=false, channels = {"MetalMech"}, packetHandler = PacketHandler.class)
 public class MetalMech {
 	
@@ -41,6 +41,7 @@ public class MetalMech {
 	
 	public static final String modid = "MetalMech";
 	public static final String name = "Metal Mechanics";
+	public static String filepath;
 	
 	// Instance:
 	@Instance("MetalMech")
@@ -58,42 +59,6 @@ public class MetalMech {
 	public static Hooks hooks = new Hooks();
 	public RecipeManager recipeManager = new RecipeManager();
 	
-	
-	// Block and Item Titles:
-	public static String[] machineBlockTitles = {
-		"Lead Furnace",
-		"Aluminium Furnace",
-		"Titanium Furnace"
-	};
-	public static String[] machineCrusherBlockTitles = {
-		"Lead Crusher",
-		"Aluminium Crusher",
-		"Titanium Crusher"
-	};
-	public static String[] electricMachineBlockTitles = {
-		"Electric Crusher",
-		"Electric Extractor",
-		"Electric Compressor"
-	};
-	
-	// Block and Item Names:
-	public static String[] machineBlockNames = {
-		"leadFurnace",
-		"aluminiumFurnace",
-		"titaniumFurnace"
-	};
-	public static String[] machineCrusherBlockNames = {
-		"leadCrusher",
-		"aluminiumCrusher",
-		"titaniumCrusher"
-	};
-	public static String[] electricMachineBlockNames = {
-		"electricCrusher",
-		"electricExtractor",
-		"electricCompressor"
-	};
-	
-	
 	// Blocks:
 	public static Object metalSet;
 	public static Block machineBlock;
@@ -105,61 +70,73 @@ public class MetalMech {
 	public static Map<String, IModelRender> models = new HashMap<String, IModelRender>();
 	
 	
-	// Pre Init:
+	// ==================================================
+	//                Pre-Initialization
+	// ==================================================
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event) {
+		
+		// ========== Create Machines ==========
+		MachineManager.addMachines();
+		
+		// ========== Config ==========
 		Config.init();
-		String filepath = event.getSourceFile().getAbsolutePath();
+		
+		// ========== Create Metalset ==========
+		filepath = event.getSourceFile().getAbsolutePath();
 		if(!isRelease) {
 				filepath = filepath.substring(0, filepath.length() - 25);
-				filepath += "builds/MetalMech.zip";
+				filepath += "resources/MetalMech.zip";
 		}
 		hooks.metallurgyGetMetalsetData(modid, filepath);
 		metalSet = hooks.metallurgyNewMetalset(modid, creativeTab);
 	}
 	
 	
-	// Init:
+	// ==================================================
+	//                  Initialization
+	// ==================================================
 	@Init
     public void load(FMLInitializationEvent event) {
 		
-		// Network:
+		// ========== Network ==========
 		NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());
 		
-		// Properties:
-		TileEntityMachine.setMachineRanks();
-		TileEntityMachineElectric.setElectricMachineTypes();
-		
+		// ========== Create Blocks ==========
 		if(Config.furnacesEnabled) {
-			machineBlock = new BlockMachineBasic(Config.furnaceID, "furnace/");
+			machineBlock = new BlockMachineBasic(MachineManager.getMachineBlockID("Furnace"), "furnace/");
 			((BlockMachineBasic)machineBlock).registerBlock();
 		}
 		
 		if(Config.crushersEnabled) {
-			machineBlockCrusher = new BlockMachineCrusher(Config.crusherID, "furnace/");
-			((BlockMachineCrusher)machineBlockCrusher).registerBlock();
+			machineBlockCrusher = new BlockMachineCrusher(MachineManager.getMachineBlockID("Crusher"), "furnace/");
+			((BlockMachineBasic)machineBlockCrusher).registerBlock();
 		}
 		
 		if(Config.electricMachinesEnabled) {
-			machineBlockElectric = new BlockMachineElectric(Config.electricCrusherID, "furnace/");
-			((BlockMachineElectric)machineBlockElectric).registerBlock();
+			machineBlockElectric = new BlockMachineElectric(MachineManager.getMachineBlockID("Electric"), "furnace/");
+			((BlockMachineBasic)machineBlockElectric).registerBlock();
 		}
 		
-		// Models:
+		// ========== Models ==========
 		proxy.registerModels();
 		
-		// Tile Entities:
+		// ========== Tile Entities ==========
 		GameRegistry.registerTileEntity(TileEntityMachine.class, "TileEntityMachine");
 		proxy.registerTileEntities();
 		
-		// Renderers:
+		// ========== Renderers ==========
 		proxy.registerRenderInformation();
 	}
 	
 	
-	// Post Init:
+	// ==================================================
+	//                Post-Initialization
+	// ==================================================
     @PostInit
     public void postInit(FMLPostInitializationEvent event) {
+    	
+    	// ========== Add Recipes ==========
     	recipeManager.addRecipes();
     }
    

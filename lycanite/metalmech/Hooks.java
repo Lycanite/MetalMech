@@ -39,8 +39,8 @@ public class Hooks {
 			classPackages.put("FluidMech", "fluidmech.common");
 			
 			// Other Mods:
-			classPackages.put("BiomesOPlentyBlocks", "tdwp_ftw.biomesop.configuration.BOPBlocks");
-			classPackages.put("BiomesOPlentyItems", "tdwp_ftw.biomesop.configuration.BOPItems");
+			classPackages.put("BOPBlocks", "tdwp_ftw.biomesop.configuration");
+			classPackages.put("BOPItems", "tdwp_ftw.biomesop.configuration");
 		}
 	}
 	

@@ -7,8 +7,8 @@ import universalelectricity.prefab.implement.IToolConfigurator;
 import lycanite.metalmech.GuiHandler;
 import lycanite.metalmech.MetalMech;
 import lycanite.metalmech.client.ClientProxy;
-import lycanite.metalmech.item.ItemBlockMachineCrusher;
-import lycanite.metalmech.item.ItemBlockMachineElectric;
+import lycanite.metalmech.item.ItemBlockMachine;
+import lycanite.metalmech.tileentity.TileEntityMachineElectric;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -29,26 +29,9 @@ public class BlockMachineElectric extends BlockMachineBasic {
 	}
 	
 	
-	// Get Names:
-	@Override
-	public String[] getNames() {
-		return MetalMech.electricMachineBlockNames;
-	}
-	
-	
-	// Get Titles:
-	@Override
-	public String[] getTitles() {
-		return MetalMech.electricMachineBlockTitles;
-	}
-	
-	
 	// Register Block:
 	public void registerBlock() {
-		Item.itemsList[this.blockID] = new ItemBlockMachineElectric(this.blockID - 256);
-		for(int subBlock = 0; subBlock < this.getNames().length; subBlock++) {
-			LanguageRegistry.instance().addStringLocalization(this.getNames()[subBlock] + ".name", this.getTitles()[subBlock]);
-		}
+		Item.itemsList[this.blockID] = new ItemBlockMachine(this.blockID - 256);
 	}
 	
 	
@@ -147,7 +130,7 @@ public class BlockMachineElectric extends BlockMachineBasic {
 	// Machine Wrenched:
 	public boolean onUseWrench(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		TileEntityMachineElectric tileEntity = (TileEntityMachineElectric)world.getBlockTileEntity(x, y, z);
-		int facing = tileEntity.facing - 2;
+		int facing = tileEntity.getFacing() - 2;
 		
 		switch (facing) {
 			case 0:
@@ -190,7 +173,7 @@ public class BlockMachineElectric extends BlockMachineBasic {
 	        float fixed = 0.52F;
 	        float random2 = random.nextFloat() * 0.6F - 0.3F;
 	
-	        switch(tileEntity.facing) {
+	        switch(tileEntity.getFacing()) {
 	        	case 2:
 	        		world.spawnParticle("smoke", (double)(zPos + random2), (double)yPos, (double)(xPos - fixed), 0.0D, 0.0D, 0.0D);
 		            world.spawnParticle("reddust", (double)(zPos + random2), (double)yPos, (double)(xPos - fixed), 0.0D, 0.0D, 0.0D);

@@ -1,5 +1,6 @@
 package lycanite.metalmech.item;
 
+import lycanite.metalmech.MachineManager;
 import lycanite.metalmech.MetalMech;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -18,7 +19,7 @@ public class ItemBlockMachine extends ItemBlock {
 	// Get item Name from Item Damage:
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack) {
-        return MetalMech.machineBlockNames[itemstack.getItemDamage()];
+        return MachineManager.getName(itemstack.getItemDamage(), MachineManager.getCategory(itemstack.itemID));
     }
 	
 	

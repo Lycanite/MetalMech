@@ -1,7 +1,8 @@
 package lycanite.metalmech;
 
-import lycanite.metalmech.block.TileEntityMachine;
-import lycanite.metalmech.block.TileEntityMachineElectric;
+import lycanite.metalmech.tileentity.TileEntityMachine;
+import lycanite.metalmech.tileentity.TileEntityMachineElectric;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -14,26 +15,27 @@ public class RecipesBasicMachines {
 		// Basic Machine Recipes:
 		try {
 			if(!Loader.isModLoaded("Metallurgy3Core")) throw new Exception("Metallurgy 3 Core was not found.");
-
+			
+			// ========== Furnaces ==========
 			// Lead Furnace:
 			GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(MetalMech.machineBlock, 1, TileEntityMachine.getMetadataFromRank("Lead")),
+				new ItemStack(MetalMech.machineBlock, 1, MachineManager.getMetadata("LeadFurnace")),
 				new Object[] { "III", "IFI", "III",
-				Character.valueOf('F'), MetalMech.hooks.getItemStack("furnace", 1, 0, "MetallurgyMachines"),
+				Character.valueOf('F'), new ItemStack(Block.furnaceIdle.blockID, 1, 0),
 				Character.valueOf('I'), "ingotLead"
 			}));
 			
 			// Aluminium Furnace:
 			GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(MetalMech.machineBlock, 1, TileEntityMachine.getMetadataFromRank("Aluminium")),
+				new ItemStack(MetalMech.machineBlock, 1, MachineManager.getMetadata("AluminiumFurnace")),
 				new Object[] { "III", "IFI", "III",
-				Character.valueOf('F'), new ItemStack(MetalMech.machineBlock, 1, TileEntityMachine.getMetadataFromRank("Lead")),
+				Character.valueOf('F'), new ItemStack(MetalMech.machineBlock, 1, MachineManager.getMetadata("LeadFurnace")),
 				Character.valueOf('I'), "ingotAluminium"
 			}));
 			GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(MetalMech.machineBlock, 1, TileEntityMachine.getMetadataFromRank("Aluminium")),
+				new ItemStack(MetalMech.machineBlock, 1, MachineManager.getMetadata("AluminiumFurnace")),
 				new Object[] { "III", "IFI", "III",
-				Character.valueOf('F'), MetalMech.hooks.getItemStack("furnace", 1, 1, "MetallurgyMachines"),
+				Character.valueOf('F'), MetalMech.hooks.getItemStack("furnace", 1, 0, "MetallurgyMachines"),
 				Character.valueOf('I'), "ingotAluminium"
 			}));
 			
@@ -41,21 +43,21 @@ public class RecipesBasicMachines {
 			GameRegistry.addRecipe(new ShapedOreRecipe(
 				MetalMech.hooks.getItemStack("furnace", 1, 2, "MetallurgyMachines"),
 				new Object[] { "III", "IFI", "III",
-				Character.valueOf('F'), new ItemStack(MetalMech.machineBlock, 1, TileEntityMachine.getMetadataFromRank("Lead")),
+				Character.valueOf('F'), new ItemStack(MetalMech.machineBlock, 1, MachineManager.getMetadata("LeadFurnace")),
 				Character.valueOf('I'), Item.ingotIron
 			}));
 			
 			// Titanium Furnace:
 			GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(MetalMech.machineBlock, 1, TileEntityMachine.getMetadataFromRank("Titanium")),
+				new ItemStack(MetalMech.machineBlock, 1, MachineManager.getMetadata("TitaniumFurnace")),
 				new Object[] { "III", "IFI", "III",
-				Character.valueOf('F'), new ItemStack(MetalMech.machineBlock, 1, TileEntityMachine.getMetadataFromRank("Aluminium")),
+				Character.valueOf('F'), new ItemStack(MetalMech.machineBlock, 1, MachineManager.getMetadata("AluminiumFurnace")),
 				Character.valueOf('I'), "ingotTitanium"
 			}));
 			GameRegistry.addRecipe(new ShapedOreRecipe
-				(new ItemStack(MetalMech.machineBlock, 1, TileEntityMachine.getMetadataFromRank("Titanium")),
+				(new ItemStack(MetalMech.machineBlock, 1, MachineManager.getMetadata("TitaniumFurnace")),
 				new Object[] { "III", "IFI", "III",
-				Character.valueOf('F'), MetalMech.hooks.getItemStack("furnace", 1, 2, "MetallurgyMachines"),
+				Character.valueOf('F'), MetalMech.hooks.getItemStack("furnace", 1, 1, "MetallurgyMachines"),
 				Character.valueOf('I'), "ingotTitanium"
 			}));
 			
@@ -63,30 +65,31 @@ public class RecipesBasicMachines {
 			GameRegistry.addRecipe(new ShapedOreRecipe(
 				MetalMech.hooks.getItemStack("furnace", 1, 3, "MetallurgyMachines"),
 				new Object[] { "III", "IFI", "III",
-				Character.valueOf('F'), new ItemStack(MetalMech.machineBlock, 1, TileEntityMachine.getMetadataFromRank("Aluminium")),
+				Character.valueOf('F'), new ItemStack(MetalMech.machineBlock, 1, MachineManager.getMetadata("AluminiumFurnace")),
 				Character.valueOf('I'), "ingotSteel"
 			}));
 			
 			
+			// ========== Crushers ==========
 			// Lead Crusher:
 			GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(MetalMech.machineBlockCrusher, 1, TileEntityMachine.getMetadataFromRank("Titanium")),
+				new ItemStack(MetalMech.machineBlockCrusher, 1, MachineManager.getMetadata("LeadCrusher")),
 				new Object[] { "III", "IFI", "III",
-				Character.valueOf('F'), MetalMech.hooks.getItemStack("crusher", 1, 1, "MetallurgyMachines"),
+				Character.valueOf('F'), MetalMech.hooks.getItemStack("crusher", 1, 0, "MetallurgyMachines"),
 				Character.valueOf('I'), "ingotLead"
 			}));
 			
 			// Aluminium Crusher:
 			GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(MetalMech.machineBlockCrusher, 1, TileEntityMachine.getMetadataFromRank("Aluminium")),
+				new ItemStack(MetalMech.machineBlockCrusher, 1, MachineManager.getMetadata("AluminiumCrusher")),
 				new Object[] { "III", "IFI", "III",
-				Character.valueOf('F'), new ItemStack(MetalMech.machineBlockCrusher, 1, TileEntityMachine.getMetadataFromRank("Lead")),
+				Character.valueOf('F'), new ItemStack(MetalMech.machineBlockCrusher, 1, MachineManager.getMetadata("LeadCrusher")),
 				Character.valueOf('I'), "ingotAluminium"
 			}));
 			GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(MetalMech.machineBlockCrusher, 1, TileEntityMachine.getMetadataFromRank("Aluminium")),
+				new ItemStack(MetalMech.machineBlockCrusher, 1, MachineManager.getMetadata("AluminiumCrusher")),
 				new Object[] { "III", "IFI", "III",
-				Character.valueOf('F'), MetalMech.hooks.getItemStack("crusher", 1, 2, "MetallurgyMachines"),
+				Character.valueOf('F'), MetalMech.hooks.getItemStack("crusher", 1, 1, "MetallurgyMachines"),
 				Character.valueOf('I'), "ingotAluminium"
 			}));
 			
@@ -94,21 +97,21 @@ public class RecipesBasicMachines {
 			GameRegistry.addRecipe(new ShapedOreRecipe(
 				MetalMech.hooks.getItemStack("crusher", 1, 3, "MetallurgyMachines"),
 				new Object[] { "III", "IFI", "III",
-				Character.valueOf('F'), new ItemStack(MetalMech.machineBlockCrusher, 1, TileEntityMachine.getMetadataFromRank("Lead")),
+				Character.valueOf('F'), new ItemStack(MetalMech.machineBlockCrusher, 1, MachineManager.getMetadata("LeadCrusher")),
 				Character.valueOf('I'), Item.ingotIron
 			}));
 			
 			// Titanium Crusher:
 			GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(MetalMech.machineBlockCrusher, 1, TileEntityMachine.getMetadataFromRank("Titanium")),
+				new ItemStack(MetalMech.machineBlockCrusher, 1, MachineManager.getMetadata("TitaniumCrusher")),
 				new Object[] { "III", "IFI", "III",
-				Character.valueOf('F'), new ItemStack(MetalMech.machineBlockCrusher, 1, TileEntityMachine.getMetadataFromRank("Aluminium")),
+				Character.valueOf('F'), new ItemStack(MetalMech.machineBlockCrusher, 1, MachineManager.getMetadata("AluminiumCrusher")),
 				Character.valueOf('I'), "ingotTitanium"
 			}));
 			GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(MetalMech.machineBlockCrusher, 1, TileEntityMachine.getMetadataFromRank("Titanium")),
+				new ItemStack(MetalMech.machineBlockCrusher, 1, MachineManager.getMetadata("TitaniumCrusher")),
 				new Object[] { 	"III", "IFI", "III",
-				Character.valueOf('F'), MetalMech.hooks.getItemStack("crusher", 1, 3, "MetallurgyMachines"),
+				Character.valueOf('F'), MetalMech.hooks.getItemStack("crusher", 1, 2, "MetallurgyMachines"),
 				Character.valueOf('I'), "ingotTitanium"
 			}));
 			
@@ -116,7 +119,7 @@ public class RecipesBasicMachines {
 			GameRegistry.addRecipe(new ShapedOreRecipe(
 				MetalMech.hooks.getItemStack("crusher", 1, 4, "MetallurgyMachines"),
 				new Object[] { 	"III", "IFI", "III",
-				Character.valueOf('F'), new ItemStack(MetalMech.machineBlockCrusher, 1, TileEntityMachine.getMetadataFromRank("Aluminium")),
+				Character.valueOf('F'), new ItemStack(MetalMech.machineBlockCrusher, 1, MachineManager.getMetadata("AluminiumCrusher")),
 				Character.valueOf('I'), "ingotSteel"
 			}));
 		}

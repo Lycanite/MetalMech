@@ -1,7 +1,7 @@
 package lycanite.metalmech;
 
-import lycanite.metalmech.block.TileEntityMachine;
-import lycanite.metalmech.block.TileEntityMachineElectric;
+import lycanite.metalmech.tileentity.TileEntityMachine;
+import lycanite.metalmech.tileentity.TileEntityMachineElectric;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -34,7 +34,7 @@ public class RecipesElectricMachines {
 			GameRegistry.addRecipe(new ShapedOreRecipe(
 				(ItemStack)OreDictionary.getOres("electricFurnace").get(0),
 				new Object[] { " C ", " F ", " M ",
-				Character.valueOf('F'), new ItemStack(MetalMech.machineBlock, 1, TileEntityMachine.getMetadataFromRank("Titanium")),
+				Character.valueOf('F'), new ItemStack(MetalMech.machineBlock, 1, MachineManager.getMetadata("TitaniumFurnace")),
 				Character.valueOf('C'), "basicCircuit",
 				Character.valueOf('M'), "motor"
 			}));
@@ -42,7 +42,7 @@ public class RecipesElectricMachines {
 			
 			// ========== Electric Crusher ==========
 			GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(MetalMech.machineBlockElectric, 1, TileEntityMachineElectric.getTypeFromString("Crusher")),
+				new ItemStack(MetalMech.machineBlockElectric, 1, MachineManager.getMetadata("Crusher")),
 				new Object[] { "SSS", "MCM", "LLL",
 				Character.valueOf('L'), "ingotLead",
 				Character.valueOf('S'), "ingotSteel",
@@ -50,7 +50,7 @@ public class RecipesElectricMachines {
 				Character.valueOf('M'), "motor"
 			}));
 			GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(MetalMech.machineBlockElectric, 1, TileEntityMachineElectric.getTypeFromString("Crusher")),
+				new ItemStack(MetalMech.machineBlockElectric, 1, MachineManager.getMetadata("Crusher")),
 				new Object[] { "TTT", "MCM", "LLL",
 				Character.valueOf('L'), "ingotLead",
 				Character.valueOf('T'), "ingotTitanium",
@@ -58,30 +58,30 @@ public class RecipesElectricMachines {
 				Character.valueOf('M'), "motor"
 			}));
 			GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(MetalMech.machineBlockElectric, 1, TileEntityMachineElectric.getTypeFromString("Crusher")),
+				new ItemStack(MetalMech.machineBlockElectric, 1, MachineManager.getMetadata("Crusher")),
 				new Object[] { " C ", "MRM", "   ",
 				Character.valueOf('R'), MetalMech.hooks.getItemStack("crusher", 1, 4, "MetallurgyMachines"),
 				Character.valueOf('C'), "basicCircuit",
 				Character.valueOf('M'), "motor"
 			}));
 			GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(MetalMech.machineBlockElectric, 1, TileEntityMachineElectric.getTypeFromString("Crusher")),
+				new ItemStack(MetalMech.machineBlockElectric, 1, MachineManager.getMetadata("Crusher")),
 				new Object[] { "   ", " C ", "MRM",
 				Character.valueOf('R'), MetalMech.hooks.getItemStack("crusher", 1, 4, "MetallurgyMachines"),
 				Character.valueOf('C'), "basicCircuit",
 				Character.valueOf('M'), "motor"
 			}));
 			GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(MetalMech.machineBlockElectric, 1, TileEntityMachineElectric.getTypeFromString("Crusher")),
+				new ItemStack(MetalMech.machineBlockElectric, 1, MachineManager.getMetadata("Crusher")),
 				new Object[] { " C ", "MRM", "   ",
-				Character.valueOf('R'), new ItemStack(MetalMech.machineBlockCrusher, 1, TileEntityMachine.getMetadataFromRank("Titanium")),
+				Character.valueOf('R'), new ItemStack(MetalMech.machineBlockCrusher, 1, MachineManager.getMetadata("TitaniumFurnace")),
 				Character.valueOf('C'), "basicCircuit",
 				Character.valueOf('M'), "motor"
 			}));
 			GameRegistry.addRecipe(new ShapedOreRecipe
-				(new ItemStack(MetalMech.machineBlockElectric, 1, TileEntityMachineElectric.getTypeFromString("Crusher")),
+				(new ItemStack(MetalMech.machineBlockElectric, 1, MachineManager.getMetadata("Crusher")),
 				new Object[] { "   ", " C ", "MRM",
-				Character.valueOf('R'), new ItemStack(MetalMech.machineBlockCrusher, 1, TileEntityMachine.getMetadataFromRank("Titanium")),
+				Character.valueOf('R'), new ItemStack(MetalMech.machineBlockCrusher, 1, MachineManager.getMetadata("TitaniumFurnace")),
 				Character.valueOf('C'), "basicCircuit",
 				Character.valueOf('M'), "motor"
 			}));
@@ -89,7 +89,7 @@ public class RecipesElectricMachines {
 			
 			// ========== Electric Extractor ==========
 			GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(MetalMech.machineBlockElectric, 1, TileEntityMachineElectric.getTypeFromString("Extractor")),
+				new ItemStack(MetalMech.machineBlockElectric, 1, MachineManager.getMetadata("Extractor")),
 				new Object[] { "SCS", "AMA", "LML",
 				Character.valueOf('L'), "ingotLead",
 				Character.valueOf('A'), "ingotAluminium",
@@ -101,13 +101,35 @@ public class RecipesElectricMachines {
 			
 			// ========== Electric Compressor ==========
 			GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(MetalMech.machineBlockElectric, 1, TileEntityMachineElectric.getTypeFromString("Compressor")),
+				new ItemStack(MetalMech.machineBlockElectric, 1, MachineManager.getMetadata("Compressor")),
 				new Object[] { "SCS", "MTM", "LTL",
+				Character.valueOf('L'), "ingotLead",
 				Character.valueOf('T'), "ingotTitanium",
 				Character.valueOf('S'), "ingotSteel",
 				Character.valueOf('C'), "basicCircuit",
 				Character.valueOf('M'), "motor"
 			}));
+			
+			
+			// ========== Electric Sawmill ==========
+			GameRegistry.addRecipe(new ShapedOreRecipe(
+				new ItemStack(MetalMech.machineBlockElectric, 1, MachineManager.getMetadata("Sawmill")),
+				new Object[] { "LIL", "IMI", "PCP",
+				Character.valueOf('I'), "ingotSteel",
+				Character.valueOf('L'), "logWood",
+				Character.valueOf('P'), "plankWood",
+				Character.valueOf('C'), "basicCircuit",
+				Character.valueOf('M'), "motor"
+			}));
+			GameRegistry.addRecipe(new ShapedOreRecipe(
+					new ItemStack(MetalMech.machineBlockElectric, 1, MachineManager.getMetadata("Sawmill")),
+					new Object[] { "LIL", "IMI", "PCP",
+					Character.valueOf('I'), "ingotTitanium",
+					Character.valueOf('L'), "logWood",
+					Character.valueOf('P'), "plankWood",
+					Character.valueOf('C'), "basicCircuit",
+					Character.valueOf('M'), "motor"
+				}));
 		}
 		catch(Exception e) {
 			System.out.println("[MetalMech] The crafting recipes for the Electric Machines could not be added:");

@@ -4,9 +4,10 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.client.FMLClientHandler;
 
+import lycanite.metalmech.MachineManager;
 import lycanite.metalmech.MetalMech;
-import lycanite.metalmech.block.TileEntityMachine;
-import lycanite.metalmech.block.TileEntityMachineElectric;
+import lycanite.metalmech.tileentity.TileEntityMachine;
+import lycanite.metalmech.tileentity.TileEntityMachineElectric;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
@@ -30,6 +31,7 @@ public class ItemRenderingHandler implements IItemRenderer {
 	
 	
 	// Render item:
+	ModelSawmill modelSawmill = new ModelSawmill(); // TEST XXX
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack itemStack, Object... data) {
 		if(type == ItemRenderType.EQUIPPED)
@@ -41,14 +43,18 @@ public class ItemRenderingHandler implements IItemRenderer {
 		GL11.glScalef(1.0F, -1F, -1F);
 		
 		if(itemStack.itemID == MetalMech.machineBlockCrusher.blockID) {
-			String machineRank = TileEntityMachine.getRankFromMetadata(itemStack.getItemDamage());
+			String machineRank = MachineManager.getType(itemStack.getItemDamage(), "Crusher");
 			GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/" + MetalMech.modid + "/textures/models/crusher/" + machineRank + ".png"));
 			MetalMech.models.get("Crusher").renderAll();
 		}
 		else if(itemStack.itemID == MetalMech.machineBlockElectric.blockID) {
-			String machineType = TileEntityMachineElectric.getTypeFromMetadata(itemStack.getItemDamage());
-			GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/" + MetalMech.modid + "/textures/models/electric/" + machineType + ".png"));
-			MetalMech.models.get(machineType).renderAll();
+			String machineType = MachineManager.getType(itemStack.getItemDamage(), "Electric");
+			if(machineType != "Sawmill") { // XXX
+				GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/" + MetalMech.modid + "/textures/models/electric/" + machineType + ".png"));
+				MetalMech.models.get(machineType).renderAll();
+			}
+			else
+				modelSawmill.render(MachineManager.getType(itemStack.getItemDamage(), "Electric"), 0f, 0f, 0f, (short)0);
 		}
 	}
 }

@@ -7,7 +7,7 @@ import lycanite.metalmech.CommonProxy;
 import lycanite.metalmech.MetalMech;
 import lycanite.metalmech.client.ClientProxy;
 import lycanite.metalmech.item.ItemBlockMachine;
-import lycanite.metalmech.item.ItemBlockMachineCrusher;
+import lycanite.metalmech.tileentity.TileEntityMachineCrusher;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -28,29 +28,6 @@ public class BlockMachineCrusher extends BlockMachineBasic {
 	// Constructor
 	public BlockMachineCrusher(int id, String texture) {
 		super(id, texture);
-	}
-	
-	
-	// Get Names:
-	@Override
-	public String[] getNames() {
-		return MetalMech.machineCrusherBlockNames;
-	}
-	
-	
-	// Get Titles:
-	@Override
-	public String[] getTitles() {
-		return MetalMech.machineCrusherBlockTitles;
-	}
-	
-	
-	// Register Block:
-	public void registerBlock() {
-		Item.itemsList[this.blockID] = new ItemBlockMachineCrusher(this.blockID - 256);
-		for(int subBlock = 0; subBlock < this.getNames().length; subBlock++) {
-			LanguageRegistry.instance().addStringLocalization(this.getNames()[subBlock] + ".name", this.getTitles()[subBlock]);
-		}
 	}
 	
 	

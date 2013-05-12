@@ -1,8 +1,7 @@
 package lycanite.metalmech.client;
 
 import lycanite.metalmech.MetalMech;
-import lycanite.metalmech.block.TileEntityMachine;
-import lycanite.metalmech.block.TileEntityMachine.MachineType;
+import lycanite.metalmech.tileentity.TileEntityMachine;
 
 import org.lwjgl.opengl.GL11;
 
@@ -26,17 +25,13 @@ public class RenderMachineCrusher extends TileEntitySpecialRenderer {
 		facing = tileEntity.facing;
 		
 		// Get Model:
-		String rank = "";
+		String type = tileEntity.getType();
 		IModelRender model = MetalMech.models.get("Crusher");
 		
-		if(tileEntity.getType() == MachineType.CRUSHER.id) {
-			rank = TileEntityMachine.getRankFromMetadata(tileEntity.getRank());
-		}
-		
 		if (tileEntity.isActive())
-			bindTextureByName("/mods/" + MetalMech.modid + "/textures/models/crusher/" + rank + "Active.png");
+			bindTextureByName("/mods/" + MetalMech.modid + "/textures/models/crusher/" + type + "Active.png");
 		else {
-			bindTextureByName("/mods/" + MetalMech.modid + "/textures/models/crusher/" + rank + ".png");
+			bindTextureByName("/mods/" + MetalMech.modid + "/textures/models/crusher/" + type + ".png");
 		}
 		
 		GL11.glPushMatrix();

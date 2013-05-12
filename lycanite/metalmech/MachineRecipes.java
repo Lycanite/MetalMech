@@ -34,6 +34,9 @@ public class MachineRecipes {
 	// Get Recipe Result:
 	public ItemStack getResult(String machineType, ItemStack itemStack) {
 		
+		if(recipes.get(machineType) == null)
+			return null;
+		
 		// With Meta:
 		ItemStack output = (ItemStack)recipes.get(machineType).get(Arrays.asList(new Integer[] { Integer.valueOf(itemStack.itemID), Integer.valueOf(itemStack.getItemDamage()) }));
 		if(output != null) return output;

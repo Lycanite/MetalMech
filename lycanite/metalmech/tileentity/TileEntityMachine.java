@@ -17,10 +17,10 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lycanite.metalmech.Config;
-import lycanite.metalmech.MachineManager;
 import lycanite.metalmech.MetalMech;
 import lycanite.metalmech.PacketHandler;
 import lycanite.metalmech.block.BlockMachineBasic;
+import lycanite.metalmech.machine.MachineManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -58,14 +58,14 @@ public class TileEntityMachine extends TileEntity implements IInventory, ISidedI
 	
 	// Constructor:
 	public TileEntityMachine() {
-		this.inventory = new ItemStack[3];
+		inventory = new ItemStack[3];
 	}
 	
 	
 	// Set Metadata:
 	public void setMetadata(int newMetadata) {
-		this.metadata = newMetadata;
-		setTimeBase(MachineManager.getSpeed(getType()));
+		metadata = newMetadata;
+		setTimeBase();
 	}
 	
 	
@@ -101,8 +101,8 @@ public class TileEntityMachine extends TileEntity implements IInventory, ISidedI
 	
 	
 	// Set Time Base:
-	public void setTimeBase(int newTime) {
-		timeBase = MachineManager.getSpeed(getType());
+	public void setTimeBase() {
+		timeBase = MachineManager.getMachineInfo(getCategory(), metadata).processTimeInit;
 	}
 	
 	
@@ -293,33 +293,30 @@ public class TileEntityMachine extends TileEntity implements IInventory, ISidedI
     
     // Get Item Fuel Time:
     public static int getItemFuelTime(ItemStack itemStack) {
-        if (itemStack == null) {
+        if(itemStack == null) {
             return 0;
         }
         else {
             int itemID = itemStack.getItem().itemID;
             Item item = itemStack.getItem();
             
-            if (itemStack.getItem() instanceof ItemBlock && Block.blocksList[itemID] != null) {
+            if(itemStack.getItem() instanceof ItemBlock && Block.blocksList[itemID] != null) {
                 Block blockName = Block.blocksList[itemID];
                 
-                if (blockName == Block.woodSingleSlab) {
+                if(blockName == Block.woodSingleSlab)
                     return 150;
-                }
-                
-                if (blockName.blockMaterial == Material.wood) {
+                if(blockName.blockMaterial == Material.wood)
                     return 300;
-                }
             }
 
-            if (item instanceof ItemTool && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200;
-            if (item instanceof ItemSword && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200;
-            if (item instanceof ItemHoe && ((ItemHoe) item).getMaterialName().equals("WOOD")) return 200;
-            if (itemID == Item.stick.itemID) return 100;
-            if (itemID == Item.coal.itemID) return 1600;
-            if (itemID == Item.bucketLava.itemID) return 20000;
-            if (itemID == Block.sapling.blockID) return 100;
-            if (itemID == Item.blazeRod.itemID) return 2400;
+            if(item instanceof ItemTool && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200;
+            if(item instanceof ItemSword && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200;
+            if(item instanceof ItemHoe && ((ItemHoe) item).getMaterialName().equals("WOOD")) return 200;
+            if(itemID == Item.stick.itemID) return 100;
+            if(itemID == Item.coal.itemID) return 1600;
+            if(itemID == Item.bucketLava.itemID) return 20000;
+            if(itemID == Block.sapling.blockID) return 100;
+            if(itemID == Item.blazeRod.itemID) return 2400;
             return GameRegistry.getFuelValue(itemStack);
         }
     }

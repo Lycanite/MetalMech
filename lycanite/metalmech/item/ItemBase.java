@@ -20,69 +20,75 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemBase extends Item {
 	
 	// Info:
-	public String texturePath;
 	public int subItems = 1;
-	public String[] subItemNames;
-	public String[] subItemTitles;
+	public String[] itemNames = { "itemBase" };
+	public String[] names = { "ItemBase" };
+	public String[] titles = { "Item Base" };
+	public String[] oreNames = { "baseItem" };
 	public boolean oreRegistry = false;
-	public Icon iconIndex;
+	
+	// Visual:
+	public String texturePath;
+	public Icon[] itemIcons = new Icon[1];
 	
 	
-	// Constructor:
-	public ItemBase(int id) {
+	// ==================================================
+	//                       Setup
+	// ==================================================
+	// ========== Constructor ==========
+	public ItemBase(int id, String setTexturePath) {
 		super(id - 256);
 		setHasSubtypes(true);
+		texturePath = setTexturePath;
+		setCreativeTab(MetalMech.creativeTab);
 	}
 	
 	
-	// Set Sub Item Names:
-	public void setSubItemNames(String[] newSubItemNames) {
-		this.subItemNames = newSubItemNames;
-		this.subItems = subItemNames.length;
-	}
-	
-	
-	// Set Sub Item Titles:
-	public void setSubItemTitles(String[] newSubItemTitles) {
-		this.subItemTitles = newSubItemTitles;
-	}
-	
-	
-	// Add To Ore Registry:
-	public void addToOreRegistry() {
-		this.oreRegistry = true;
-	}
-	
-	
-	// Register Item:
+	// ========== Register Item ==========
 	public void registerItem() {
-		for(int subItem = 0; subItem < subItems; subItem++) {
-			ItemStack item = new ItemStack(itemID, 1, subItem);
-			LanguageRegistry.addName(item, subItemTitles[subItem]);
+		for(int i = 0; i < subItems; i++) {
+			ItemStack itemStack = new ItemStack(itemID, 1, i);
+			LanguageRegistry.addName(itemStack, titles[i]);
 			if(oreRegistry) {
-				OreDictionary.registerOre(subItemNames[subItem], new ItemStack(this, 1, 0));
+				OreDictionary.registerOre(itemNames[i], itemStack);
+				OreDictionary.registerOre(oreNames[i], itemStack);
 			}
 		}
 	}
 	
 	
-	// Register Icons:
-	public void updateIcons(IconRegister iconRegister) {
-		this.iconIndex = iconRegister.registerIcon(MetalMech.modid + ":" + texturePath);
-	}
+	// ==========  Get Item Name from Metadata ==========
+	@Override
+	public String getUnlocalizedName(ItemStack itemstack) {
+        return titles[itemstack.getItemDamage()];
+    }
 	
 	
-	// Get Texture From Side and Meta:
-	public Icon getIconFromDamage(int metadata) {
-		return this.iconIndex;
-	}
-	
-	
-	// Sub-Items:
+	// ========== Sub-Items ==========
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(int unknown, CreativeTabs tab, List subItemsList) {
-		for (int ix = 0; ix < subItems; ix++) {
-			subItemsList.add(new ItemStack(this, 1, ix));
-		}
+		for(int i = 0; i < subItems; i++)
+			subItemsList.add(new ItemStack(this, 1, i));
+	}
+	
+	
+	// ==================================================
+	//                      Visuals
+	// ==================================================
+	// ========== Register Icons ==========
+	@Override
+	public void registerIcons(IconRegister iconRegister) {
+		itemIcons = new Icon[subItems];
+		for(int i = 0; i < subItems; i++)
+			itemIcons[i] = iconRegister.registerIcon(MetalMech.modid + ":" + texturePath + itemNames[i]);
+	}
+	
+	
+	// ========== Get Texture From Side and Metadata ==========
+	public Icon getIconFromDamage(int metadata) {
+		if(metadata > subItems - 1)
+			return itemIcons[0];
+		return itemIcons[metadata];
 	}
 }

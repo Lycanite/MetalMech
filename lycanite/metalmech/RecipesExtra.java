@@ -1,5 +1,6 @@
 package lycanite.metalmech;
 
+import lycanite.metalmech.machine.MachineRecipes;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -60,13 +61,14 @@ public class RecipesExtra {
 		catch(Exception e) {
 			System.out.println("[MetalMech] The alternative crafting recipes for Metallurgy could not be added:");
 			System.out.println("Make sure you have Metallurgy Base Metals and Metallurgy Utility Ores installed.");
+			e.printStackTrace();
 		}
 		
 		
 		//=============================================//
 		//               Basic Components              //
 		//=============================================//
-		try {
+		/*try {
 			GameRegistry.addRecipe(new ShapedOreRecipe(
 				MetalMech.hooks.getItemStack("itemBattery", 1, 0, "BasicComponents"),
 				new Object[] {" T ", "TST", "TST",
@@ -99,7 +101,8 @@ public class RecipesExtra {
 		catch(Exception e) {
 			System.out.println("[MetalMech] The alternative crafting recipes for Basic Components could not be added:");
 			System.out.println("Make sure you have Metallurgy Base Metals, Metallurgy Utility Ores and Basic Components installed.");
-		}
+			e.printStackTrace();
+		}*/
 		
 		
 		//=============================================//
@@ -136,7 +139,7 @@ public class RecipesExtra {
 		//=============================================//
 		//              Electric Expansion             //
 		//=============================================//
-		try {
+		/*try {
 			if(!Loader.isModLoaded("ElectricExpansion")) throw new Exception("Electric Expansion was not found.");
 			
 			// Wire Insulation:
@@ -147,7 +150,7 @@ public class RecipesExtra {
 			}));
 			MachineRecipes.instance().addRecipe("Compressor", "itemTar", MetalMech.hooks.getItemStack("itemParts", 1, 6, "ElectricExpansionItems"));
 		}
-		catch(Exception e) {}
+		catch(Exception e) {}*/
 		
 		
 		//=============================================//

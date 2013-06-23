@@ -2,8 +2,8 @@ package lycanite.metalmech.tileentity;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import lycanite.metalmech.MachineManager;
 import lycanite.metalmech.MetalMech;
+import lycanite.metalmech.machine.MachineManager;
 
 public class TileEntityMachineCrusher extends TileEntityMachine {
 	

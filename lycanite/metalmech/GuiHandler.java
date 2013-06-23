@@ -2,10 +2,11 @@ package lycanite.metalmech;
 
 import lycanite.metalmech.client.GuiMachine;
 import lycanite.metalmech.client.GuiMachineElectric;
+import lycanite.metalmech.client.GuiMachineElectric;
 import lycanite.metalmech.container.ContainerMachine;
 import lycanite.metalmech.container.ContainerMachineElectric;
 import lycanite.metalmech.tileentity.TileEntityMachine;
-import lycanite.metalmech.tileentity.TileEntityMachineElectric;
+import lycanite.metalmech.tileentity.TileEntityElectricBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -36,7 +37,7 @@ public class GuiHandler implements IGuiHandler {
 		if(guiID >= GUIType.MACHINE.id && guiID < GUIType.ELECTRIC_MACHINE.id)
 			return new ContainerMachine((TileEntityMachine)tileEntity, player.inventory);
 		else if(guiID >= GUIType.ELECTRIC_MACHINE.id && guiID < GUIType.MODULAR_MACHINE.id)
-			return new ContainerMachineElectric((TileEntityMachineElectric)tileEntity, player.inventory);
+			return new ContainerMachineElectric((TileEntityElectricBase)tileEntity, player.inventory);
 		else
 			return null;
 	}
@@ -50,7 +51,10 @@ public class GuiHandler implements IGuiHandler {
 		if(guiID >= GUIType.MACHINE.id && guiID < GUIType.ELECTRIC_MACHINE.id)
 			return new GuiMachine(player.inventory, (TileEntityMachine)tileEntity);
 		else if(guiID >= GUIType.ELECTRIC_MACHINE.id && guiID < GUIType.MODULAR_MACHINE.id)
-			return new GuiMachineElectric(player.inventory, (TileEntityMachineElectric)tileEntity);
+			if(((TileEntityElectricBase)tileEntity).getType() != "Furnace")
+				return new GuiMachineElectric(player.inventory, (TileEntityElectricBase)tileEntity);
+			else
+				return new GuiMachineElectric(player.inventory, (TileEntityElectricBase)tileEntity);
 		else
 			return null;
 	}

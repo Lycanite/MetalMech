@@ -70,7 +70,7 @@ public class TileEntityBase extends TileEntity implements IDisableable {
 		}
 	}
 
-	// Initiate:
+	// Initiate: (Called from onBlockPlacedBy on block)
 	public void initiate() {}
 	
 	// Check If Player Can Use:

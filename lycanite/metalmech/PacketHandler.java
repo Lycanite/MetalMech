@@ -7,7 +7,7 @@ import java.io.IOException;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.network.IPacketReceiver;
 import lycanite.metalmech.tileentity.TileEntityMachine;
-import lycanite.metalmech.tileentity.TileEntityMachineElectric;
+import lycanite.metalmech.tileentity.TileEntityElectricBase;
 import lycanite.metalmech.tileentity.TileEntityMachine.MachinePacketType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;

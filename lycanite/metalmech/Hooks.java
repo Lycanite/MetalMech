@@ -33,7 +33,7 @@ public class Hooks {
 			classPackages.put("MetallurgyMachines", "rebelkeithy.mods.metallurgy.machines");
 			
 			// Universal Electricity Classes:
-			classPackages.put("BasicComponents", "universalelectricity.components.common");
+			classPackages.put("BasicComponents", "basiccomponents.common");
 			classPackages.put("Mekanism", "mekanism.common");
 			classPackages.put("ElectricExpansionItems", "electricexpansion.api");
 			classPackages.put("FluidMech", "fluidmech.common");

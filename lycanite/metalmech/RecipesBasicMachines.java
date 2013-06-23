@@ -1,7 +1,8 @@
 package lycanite.metalmech;
 
+import lycanite.metalmech.machine.MachineManager;
 import lycanite.metalmech.tileentity.TileEntityMachine;
-import lycanite.metalmech.tileentity.TileEntityMachineElectric;
+import lycanite.metalmech.tileentity.TileEntityElectricBase;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

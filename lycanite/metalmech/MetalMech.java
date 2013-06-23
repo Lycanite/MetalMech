@@ -6,10 +6,17 @@ import java.util.Map;
 import lycanite.metalmech.block.BlockMachineBasic;
 import lycanite.metalmech.block.BlockMachineCrusher;
 import lycanite.metalmech.block.BlockMachineElectric;
+import lycanite.metalmech.block.BlockWire;
 import lycanite.metalmech.client.IModelRender;
+import lycanite.metalmech.item.ItemBase;
+import lycanite.metalmech.item.ItemBattery;
+import lycanite.metalmech.item.ItemComponent;
+import lycanite.metalmech.item.ItemPlate;
+import lycanite.metalmech.item.ItemWrench;
+import lycanite.metalmech.machine.MachineManager;
 import lycanite.metalmech.tileentity.TileEntityMachine;
 import lycanite.metalmech.tileentity.TileEntityMachineCrusher;
-import lycanite.metalmech.tileentity.TileEntityMachineElectric;
+import lycanite.metalmech.tileentity.TileEntityElectricBase;
 import net.minecraft.block.Block;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.creativetab.CreativeTabs;
@@ -33,11 +40,11 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = MetalMech.modid, name = MetalMech.name, version="1.4.3")
+@Mod(modid = MetalMech.modid, name = MetalMech.name, version="1.5.1")
 @NetworkMod(clientSideRequired=true, serverSideRequired=false, channels = {"MetalMech"}, packetHandler = PacketHandler.class)
 public class MetalMech {
 	
-	public static boolean isRelease = false; //XXX Change to true before releasing and false for testing!
+	public static boolean isRelease = true; //XXX Change to true before releasing and false for testing!
 	
 	public static final String modid = "MetalMech";
 	public static final String name = "Metal Mechanics";
@@ -61,13 +68,39 @@ public class MetalMech {
 	
 	// Blocks:
 	public static Object metalSet;
+	
 	public static Block machineBlock;
 	public static Block machineBlockCrusher;
 	public static Block machineBlockElectric;
+	public static Block machineBlockModular;
 	
+	public static Block generatorBlockElectric;
+	public static Block generatorBlockModular;
 	
-	// Models:
+	public static Block batteryBlockElectric;
+	public static Block batteryBlockModular;
+	
+	public static Block wireBlock;
+	
+	// Items:
+	public static Item componentItem;
+	public static Item plateItem;
+	public static Item[] batteryItem;
+	public static Item[] wrenchItem;
+	
+	// Old Models:
 	public static Map<String, IModelRender> models = new HashMap<String, IModelRender>();
+	
+	// Electric:
+	public static int lowVoltage = 60;
+	public static int mediumVoltage = 120;
+	public static int highVoltage = 240;
+	public static int extremeVoltage = 480;
+	
+	public static int lowCapacity = 60;
+	public static int mediumCapacity = 120;
+	public static int highCapacity = 240;
+	public static int extremeCapacity = 480;
 	
 	
 	// ==================================================
@@ -80,7 +113,7 @@ public class MetalMech {
 		MachineManager.addMachines();
 		
 		// ========== Config ==========
-		Config.init();
+		Config.init(event.getModConfigurationDirectory());
 		
 		// ========== Create Metalset ==========
 		filepath = event.getSourceFile().getAbsolutePath();
@@ -114,8 +147,50 @@ public class MetalMech {
 		}
 		
 		if(Config.electricMachinesEnabled) {
-			machineBlockElectric = new BlockMachineElectric(MachineManager.getMachineBlockID("Electric"), "furnace/");
+			machineBlockElectric = new BlockMachineElectric(MachineManager.getMachineBlockID("Machine"), "machines/");
 			((BlockMachineBasic)machineBlockElectric).registerBlock();
+		}
+		
+		if(Config.electricGeneratorsEnabled) {
+			generatorBlockElectric = new BlockMachineElectric(MachineManager.getMachineBlockID("Generator"), "machines/");
+			((BlockMachineBasic)generatorBlockElectric).registerBlock();
+		}
+		
+		if(Config.electricBatteriesEnabled) {
+			batteryBlockElectric = new BlockMachineElectric(MachineManager.getMachineBlockID("Battery"), "machines/");
+			((BlockMachineBasic)batteryBlockElectric).registerBlock();
+		}
+		
+		if(Config.wiresEnabled) {
+			wireBlock = new BlockWire(MachineManager.getMachineBlockID("Wire"), "wires/");
+			((BlockWire)wireBlock).registerBlock();
+		}
+		
+		// ========== Create Items ==========
+		if(Config.componentsEnabled) {
+			componentItem = new ItemComponent(Config.componentsID, "components/");
+			((ItemBase)componentItem).registerItem();
+		}
+
+		if(Config.platesEnabled) {
+			plateItem = new ItemPlate(Config.platesID, "plates/");
+			((ItemBase)plateItem).registerItem();
+		}
+
+		if(Config.batteryEnabled) {
+			batteryItem = new Item[3];
+			for(int i = 0; i < batteryItem.length; i++) {
+				batteryItem[i] = new ItemBattery(Config.batteryID + i, "batteries/", i);
+				((ItemBase)batteryItem[i]).registerItem();
+			}
+		}
+
+		if(Config.wrenchEnabled) {
+			wrenchItem = new Item[2];
+			for(int i = 0; i < wrenchItem.length; i++) {
+				wrenchItem[i] = new ItemWrench(Config.wrenchID + i, "tools/", i);
+				((ItemBase)wrenchItem[i]).registerItem();
+			}
 		}
 		
 		// ========== Models ==========

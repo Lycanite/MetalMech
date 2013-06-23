@@ -11,11 +11,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lycanite.metalmech.CommonProxy;
 import lycanite.metalmech.GuiHandler;
-import lycanite.metalmech.MachineManager;
 import lycanite.metalmech.MetalMech;
 import lycanite.metalmech.item.ItemBlockMachine;
+import lycanite.metalmech.machine.MachineManager;
 import lycanite.metalmech.tileentity.TileEntityMachine;
-import lycanite.metalmech.tileentity.TileEntityMachineElectric;
+import lycanite.metalmech.tileentity.TileEntityElectricBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -40,37 +40,53 @@ public class BlockMachineBasic extends BlockContainer {
 	
 	// Info:
 	public Random random = new Random();
+	public boolean oreRegistry = false;
+	
+	// Textures:
 	public String texturePath;
 	public Map<String, Icon> blockIcons = new HashMap<String, Icon>();
 	public Map<String, Icon> blockIconsTop = new HashMap<String, Icon>();
 	public Map<String, Icon> blockIconsFront = new HashMap<String, Icon>();
 	public Map<String, Icon> blockIconsActive = new HashMap<String, Icon>();
 	
-	// Constructor:
+	
+	// ========== Constructor ==========
 	public BlockMachineBasic(int id, String texture) {
 		super(id, Material.iron);
-		this.texturePath = texture;
+		texturePath = texture;
         setHardness(3.5F);
         MinecraftForge.setBlockHarvestLevel(this, "pickaxe", 1);
         setStepSound(Block.soundMetalFootstep);
         setCreativeTab(MetalMech.creativeTab);
+        addToOreRegistry();
 	}
 	
 	
+	// ========== Block Details ==========
 	// Register Block:
 	public void registerBlock() {
-		Item.itemsList[this.blockID] = new ItemBlockMachine(this.blockID - 256);
+		Item.itemsList[blockID] = new ItemBlockMachine(blockID - 256);
+		for(int itemMeta = 0; itemMeta < MachineManager.getCategory(blockID).machineCount; itemMeta++)
+			if(oreRegistry)
+				OreDictionary.registerOre(MachineManager.getMachineInfo(blockID, itemMeta).blockName, new ItemStack(blockID, 1, itemMeta));
 	}
 	
 	
 	// Get Sub Blocks (For Creative Tabs):
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int unknown, CreativeTabs tab, List subItems) {
-		for(int itemMeta = 0; itemMeta < MachineManager.getSubBlocks(MachineManager.getCategory(this.blockID)); itemMeta++)
+		for(int itemMeta = 0; itemMeta < MachineManager.getCategory(this.blockID).machineCount; itemMeta++)
 			subItems.add(new ItemStack(this, 1, itemMeta));
 	}
 	
 	
+	// Add To Ore Registry:
+	public void addToOreRegistry() {
+		oreRegistry = true;
+	}
+	
+	
+	// ========== Block Behaviour ==========
 	// Drop ID:
 	@Override
 	public int idDropped(int par1, Random random, int zero) {
@@ -85,68 +101,7 @@ public class BlockMachineBasic extends BlockContainer {
 	}
 	
 	
-	// Register Icons:
-	@Override
-	public void registerIcons(IconRegister iconRegister) {
-		String[] machineRanks = {"LeadFurnace", "AluminiumFurnace", "TitaniumFurnace"};
-		for(String machineRankN : machineRanks) {
-			this.blockIcons.put(machineRankN, iconRegister.registerIcon(MetalMech.modid + ":" + texturePath + machineRankN + "Side"));
-			this.blockIconsTop.put(machineRankN, iconRegister.registerIcon(MetalMech.modid + ":" + texturePath + machineRankN + "Top"));
-			this.blockIconsFront.put(machineRankN, iconRegister.registerIcon(MetalMech.modid + ":" + texturePath + machineRankN + "Front"));
-			this.blockIconsActive.put(machineRankN, iconRegister.registerIcon(MetalMech.modid + ":" + texturePath + machineRankN + "Active"));
-		}
-	}
-	
-	
-	// Get Texture:
-	@Override
-	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side) {
-		int metadata = world.getBlockMetadata(x, y, z);
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-		int facing = 2;
-		boolean isActive = false;
-		
-		if(tileEntity instanceof TileEntityMachine) {
-			facing = ((TileEntityMachine)tileEntity).facing;
-			isActive = ((TileEntityMachine)tileEntity).isActive();
-		}
-		if(tileEntity instanceof TileEntityMachineElectric) {
-			facing = ((TileEntityMachineElectric)tileEntity).getFacing();
-			isActive = ((TileEntityMachineElectric)tileEntity).isActive();
-		}
-		
-		switch(side) {
-			case 1: return this.blockIconsTop.get(MachineManager.getType(metadata, "Furnace")); // Top
-			case 0: return this.blockIconsTop.get(MachineManager.getType(metadata, "Furnace")); // Bottom
-			default:
-				if(side == facing) {
-					if(isActive) {
-						return this.blockIconsActive.get(MachineManager.getType(metadata, "Furnace")); // Front On
-					}
-					else {
-						return this.blockIconsFront.get(MachineManager.getType(metadata, "Furnace")); // Front
-					}
-				}
-				else {
-					return this.blockIcons.get(MachineManager.getType(metadata, "Furnace")); // Sides
-				}
-		}
-	}
-	
-	
-	// Get Icon from Side and Metadata:
-	@Override
-	public Icon getIcon(int side, int metadata) {
-		switch(side) {
-			case 1: return this.blockIconsTop.get(MachineManager.getType(metadata, "Furnace")); // Top
-			case 0: return this.blockIconsTop.get(MachineManager.getType(metadata, "Furnace")); // Bottom
-			case 3: return this.blockIconsFront.get(MachineManager.getType(metadata, "Furnace")); // Front (Inventory)
-			default: return this.blockIcons.get(MachineManager.getType(metadata, "Furnace")); // Sides
-		}
-	}
-	
-	
-	// Block Loaded:
+	// Block Placement:
     public void onBlockAdded(World world, int x, int y, int z) {
         super.onBlockAdded(world, x, y, z);
         //this.setDefaultDirection(world, x, y, z);
@@ -181,8 +136,8 @@ public class BlockMachineBasic extends BlockContainer {
             TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
             if(tileEntity instanceof TileEntityMachine)
             	((TileEntityMachine)tileEntity).setFacing(rotation);
-            if(tileEntity instanceof TileEntityMachineElectric)
-            	((TileEntityMachineElectric)tileEntity).setFacing(rotation);
+            if(tileEntity instanceof TileEntityElectricBase)
+            	((TileEntityElectricBase)tileEntity).setFacing(rotation);
         }
     }
     
@@ -211,8 +166,8 @@ public class BlockMachineBasic extends BlockContainer {
         
         if(tileEntity instanceof TileEntityMachine)
         	((TileEntityMachine)tileEntity).setFacing(targetFacing);
-        if(tileEntity instanceof TileEntityMachineElectric)
-        	((TileEntityMachineElectric)tileEntity).setFacing(targetFacing);
+        if(tileEntity instanceof TileEntityElectricBase)
+        	((TileEntityElectricBase)tileEntity).setFacing(targetFacing);
     }
 	
 	
@@ -310,6 +265,68 @@ public class BlockMachineBasic extends BlockContainer {
     }
 	
 	
+	// ========== Block Visuals ==========
+	// Register Icons:
+	@Override
+	public void registerIcons(IconRegister iconRegister) {
+		String[] machineRanks = {"LeadFurnace", "AluminiumFurnace", "TitaniumFurnace"};
+		for(String machineRankN : machineRanks) {
+			this.blockIcons.put(machineRankN, iconRegister.registerIcon(MetalMech.modid + ":" + texturePath + machineRankN + "Side"));
+			this.blockIconsTop.put(machineRankN, iconRegister.registerIcon(MetalMech.modid + ":" + texturePath + machineRankN + "Top"));
+			this.blockIconsFront.put(machineRankN, iconRegister.registerIcon(MetalMech.modid + ":" + texturePath + machineRankN + "Front"));
+			this.blockIconsActive.put(machineRankN, iconRegister.registerIcon(MetalMech.modid + ":" + texturePath + machineRankN + "Active"));
+		}
+	}
+	
+	
+	// Get Texture:
+	@Override
+	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side) {
+		int metadata = world.getBlockMetadata(x, y, z);
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		int facing = 2;
+		boolean isActive = false;
+		
+		if(tileEntity instanceof TileEntityMachine) {
+			facing = ((TileEntityMachine)tileEntity).facing;
+			isActive = ((TileEntityMachine)tileEntity).isActive();
+		}
+		if(tileEntity instanceof TileEntityElectricBase) {
+			facing = ((TileEntityElectricBase)tileEntity).getFacing();
+			isActive = ((TileEntityElectricBase)tileEntity).isActive();
+		}
+		
+		switch(side) {
+			case 1: return this.blockIconsTop.get(MachineManager.getType(metadata, "Furnace")); // Top
+			case 0: return this.blockIconsTop.get(MachineManager.getType(metadata, "Furnace")); // Bottom
+			default:
+				if(side == facing) {
+					if(isActive) {
+						return this.blockIconsActive.get(MachineManager.getType(metadata, "Furnace")); // Front On
+					}
+					else {
+						return this.blockIconsFront.get(MachineManager.getType(metadata, "Furnace")); // Front
+					}
+				}
+				else {
+					return this.blockIcons.get(MachineManager.getType(metadata, "Furnace")); // Sides
+				}
+		}
+	}
+	
+	
+	// Get Icon from Side and Metadata:
+	@Override
+	public Icon getIcon(int side, int metadata) {
+		switch(side) {
+			case 1: return this.blockIconsTop.get(MachineManager.getType(metadata, "Furnace")); // Top
+			case 0: return this.blockIconsTop.get(MachineManager.getType(metadata, "Furnace")); // Bottom
+			case 3: return this.blockIconsFront.get(MachineManager.getType(metadata, "Furnace")); // Front (Inventory)
+			default: return this.blockIcons.get(MachineManager.getType(metadata, "Furnace")); // Sides
+		}
+	}
+	
+	
 	// Block Lighting:
 	@Override
 	public int getLightValue(IBlockAccess world,int  x,int y,int z){
@@ -321,8 +338,8 @@ public class BlockMachineBasic extends BlockContainer {
 			        	 return 15;
 			         }
 		    	 }
-		    	 if(tileEntity instanceof TileEntityMachineElectric) {
-		    		 if(((TileEntityMachineElectric)tileEntity).isActive()) {
+		    	 if(tileEntity instanceof TileEntityElectricBase) {
+		    		 if(((TileEntityElectricBase)tileEntity).isActive()) {
 			        	 return 15;
 			         }
 		    	 }

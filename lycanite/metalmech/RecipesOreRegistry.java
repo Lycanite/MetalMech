@@ -1,5 +1,6 @@
 package lycanite.metalmech;
 
+import lycanite.metalmech.machine.MachineRecipes;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.oredict.OreDictionary;

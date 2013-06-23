@@ -4,10 +4,10 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.client.FMLClientHandler;
 
-import lycanite.metalmech.MachineManager;
 import lycanite.metalmech.MetalMech;
+import lycanite.metalmech.machine.MachineManager;
 import lycanite.metalmech.tileentity.TileEntityMachine;
-import lycanite.metalmech.tileentity.TileEntityMachineElectric;
+import lycanite.metalmech.tileentity.TileEntityElectricBase;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
@@ -18,7 +18,7 @@ public class ItemRenderingHandler implements IItemRenderer {
 	@Override
 	public boolean handleRenderType(ItemStack itemStack, ItemRenderType type) {
 		if(itemStack.itemID == MetalMech.machineBlockCrusher.blockID) return true;
-		else if(itemStack.itemID == MetalMech.machineBlockElectric.blockID) return true;
+		else if(MachineManager.getCategory(itemStack.itemID) != null) return true;
 		return false;
 	}
 	
@@ -31,7 +31,6 @@ public class ItemRenderingHandler implements IItemRenderer {
 	
 	
 	// Render item:
-	ModelSawmill modelSawmill = new ModelSawmill(); // TEST XXX
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack itemStack, Object... data) {
 		if(type == ItemRenderType.EQUIPPED)
@@ -47,14 +46,17 @@ public class ItemRenderingHandler implements IItemRenderer {
 			GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/" + MetalMech.modid + "/textures/models/crusher/" + machineRank + ".png"));
 			MetalMech.models.get("Crusher").renderAll();
 		}
-		else if(itemStack.itemID == MetalMech.machineBlockElectric.blockID) {
-			String machineType = MachineManager.getType(itemStack.getItemDamage(), "Electric");
-			if(machineType != "Sawmill") { // XXX
-				GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/" + MetalMech.modid + "/textures/models/electric/" + machineType + ".png"));
-				MetalMech.models.get(machineType).renderAll();
+		else if(MachineManager.getCategory(itemStack.itemID) != null) {
+			if(MachineManager.getCategory(itemStack.itemID).name == "Wire") {
+				ModelWire modelWire = new ModelWire();
+				boolean[] connections = { false, false, true, true, false, false };
+				modelWire.render(MachineManager.getType(itemStack.getItemDamage(), MachineManager.getCategory(itemStack.itemID).name), 0f, 0f, 0f, connections);
 			}
-			else
-				modelSawmill.render(MachineManager.getType(itemStack.getItemDamage(), "Electric"), 0f, 0f, 0f, (short)0);
+			else {
+				String[] machineType = { MachineManager.getType(itemStack.getItemDamage(), MachineManager.getCategory(itemStack.itemID).name), MachineManager.getCategory(itemStack.itemID).name };
+				ModelMachineElectric modelMachineElectric = new ModelMachineElectric();
+				modelMachineElectric.render(machineType, 0f, 0f, 0f, (short)0);
+			}
 		}
 	}
 }
